@@ -1,7 +1,6 @@
 React ile yaptığım To-Do List projesi.
 
 Özellikler:
-
 - Yeni görev oluşturabilme.
 - Var olan görevi silme.
 - Görevleri sürükle-bırak ile sırasını değiştirebilme.
