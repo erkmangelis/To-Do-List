@@ -1,136 +1,192 @@
-import { React, useState } from "react";
-import CIcon  from '@coreui/icons-react';
+import React, { useState } from "react";
+import CIcon from '@coreui/icons-react';
 import { cilCursorMove, cilNoteAdd, cilTrash } from '@coreui/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './App.css';
 
-
 function App() {
-  const data = [
-    {
-      id: 1,
-      title: "Banana",
-      text: "It's a fruit and has a yellow label outside"
-    },
-    {
-      id: 2,
-      title: "Apple",
-      text: ""
-    },
-    { 
-      id: 3,
-      title: "Orange",
-      text: "It's a citrus fruit and has an orange peel"
-    }
-  ];
+  const initialData = {
+    "next-up": [
+      {
+        id: '1',
+        title: "Banana",
+        text: "It's a fruit and has a yellow label outside",
+        droppableId: "next-up"
+      }
+    ],
+    "in-progress": [
+      {
+        id: '2',
+        title: "Apple",
+        text: "It's a fruit and has yellow, red and green label outside",
+        droppableId: "next-up"
+      }],
+    "completed": [
+      {
+        id: '3',
+        title: "Orange",
+        text: "It's a citrus fruit and has an orange peel",
+        droppableId: "next-up"
+      }]
+  };
 
-  const [items, setItems] = useState(data);
+  const [columns, setColumns] = useState(initialData);
   const [hoverItem, setHoverItem] = useState(null);
   const [editTitle, setEditTitle] = useState(false);
   const [editText, setEditText] = useState(false);
 
-  const handleTitleChange = (index, event) => {
-    const newItems = [...items];
-    newItems[index].title = event.target.value;
-    setItems(newItems);
+  const handleTitleChange = (column, index, event) => {
+    const newColumns = { ...columns };
+    newColumns[column][index].title = event.target.value;
+    setColumns(newColumns);
   };
 
-  const handleTextChange = (index, event) => {
-    const newItems = [...items];
-    newItems[index].text = event.target.value;
-    setItems(newItems);
+  const handleTextChange = (column, index, event) => {
+    const newColumns = { ...columns };
+    newColumns[column][index].text = event.target.value;
+    setColumns(newColumns);
   };
 
-  function handleOver(index) {
-    setHoverItem(index);
-  }
+  const handleOver = (item) => {
+    setHoverItem(item.id);
+  };
 
-  function handleOut() {
+  const handleOut = () => {
     setEditTitle(false);
     setEditText(false);
     setHoverItem(null);
-  }
+  };
 
-  function editTitleButton() {
+  const editTitleButton = () => {
     setEditTitle(true);
-  }
+  };
 
-  function editTextButton() {
+  const editTextButton = () => {
     setEditText(true);
-  }
+  };
 
-  function removeItem(index) {
-    const newItems = [...items];
-    newItems[index].title = "";
-    newItems[index].text = "";
-    setItems(newItems);
-  }
+  const removeItem = (column, index) => {
+    const newColumns = { ...columns };
+    newColumns[column].splice(index, 1);
+    setColumns(newColumns);
+  };
 
-  function addItem() {
-    const newItem = {
-      id : items.length+1,
-      title : "New To-Do",
-      text : "Fill here with your do"
-    };
-    setItems([...items, newItem]);
-  }
+  const addItem = (column) => {
+    if (columns["next-up"].length < 3) {
 
+      const newItem = {
+        id: `${column}-${columns[column].length + 1}`,
+        title: "New To-Do",
+        text: "Fill here with your task",
+        droppableId: column
+      };
+      setColumns({ ...columns, [column]: [...columns[column], newItem] });
+    } else {
+      alert("'Next Up' listesi doluyken yeni item ekleyemezsin.");
+    }
+  };
+
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    if (!destination) return;
+
+    const sourceColumn = columns[source.droppableId];
+    const destinationColumn = columns[destination.droppableId];
+    const draggedItem = sourceColumn[source.index];
+
+    if (source.droppableId === destination.droppableId) {
+      // Moving within the same column
+      const newColumn = [...sourceColumn];
+      newColumn.splice(source.index, 1);
+      newColumn.splice(destination.index, 0, draggedItem);
+
+      setColumns({ ...columns, [source.droppableId]: newColumn });
+    } else {
+      // Moving to a different column
+      const newSourceColumn = [...sourceColumn];
+      newSourceColumn.splice(source.index, 1);
+      const newDestinationColumn = [...destinationColumn];
+      newDestinationColumn.splice(destination.index, 0, { ...draggedItem, droppableId: destination.droppableId });
+
+      setColumns({
+        ...columns,
+        [source.droppableId]: newSourceColumn,
+        [destination.droppableId]: newDestinationColumn
+      });
+    }
+  };
 
   return (
     <>
       <header>
-        <CIcon className="add-button" icon={cilNoteAdd} onClick={() => addItem()} />
+        <CIcon className="add-button" icon={cilNoteAdd} onClick={() => addItem("next-up")} />
         <h1>To-Do List</h1>
       </header>
       <body>
-        <div className="main">
-          <div className="main-col" id="next-up">
-            <div className="main-header">
-              <p className="main-header-title">Next Up</p>
-            </div>
-            <div className="main-body">
-              {items.map((item, index) => (
-                item.text !== "" ?
-                (
-                  <div key={index} className="card" onMouseOver={() => handleOver(index)}>
-                    <div className="card-header">
-                      {hoverItem === index && editTitle === true ?
-                      <input type="text" className="titleInp" value={item.title} onMouseLeave={() => handleOut()} onChange={(event) => handleTitleChange(index, event)} autoFocus></input> :
-                      <p className="card-title" onClick={() => editTitleButton()}>{item.title}</p>
-                      }
-                      <CIcon icon={cilCursorMove} />
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="main">
+            {Object.keys(columns).map((columnId) => (
+              <Droppable key={columnId} droppableId={columnId}>
+                {(provided) => (
+                  <div className="main-col" id={columnId}>
+                    <div className="main-header">
+                      <p className="main-header-title">{columnId.replace(/-/g, " ").toUpperCase()}</p>
                     </div>
-                    <div className="card-body">
-                      {hoverItem === index && editText === true ?
-                      <textarea type="text" className="textInp" value={item.text} onMouseLeave={() => handleOut()} onChange={(event) => handleTextChange(index, event)} autoFocus></textarea> :
-                      <p className="card-text" onClick={() => editTextButton()}>{item.text}</p>
-                      }
-                    </div>
-                    <div className="card-footer">
-                      <CIcon icon={cilTrash} onClick={() => removeItem(index)}/>
+                    <div className="main-body" ref={provided.innerRef} {...provided.droppableProps}>
+                      {columns[columnId].map((item, index) => (
+                        <Draggable key={item.id} draggableId={item.id} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="card"
+                              onMouseOver={() => handleOver(item)}
+                            >
+                              <div className="card-header">
+                                {hoverItem === item.id && editTitle === true ? (
+                                  <input
+                                    type="text"
+                                    className="titleInp"
+                                    value={item.title}
+                                    onMouseLeave={handleOut}
+                                    onChange={(event) => handleTitleChange(columnId, index, event)}
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <p className="card-title" onClick={editTitleButton}>{item.title}</p>
+                                )}
+                                <CIcon icon={cilCursorMove} />
+                              </div>
+                              <div className="card-body">
+                                {hoverItem === item.id && editText === true ? (
+                                  <textarea
+                                    type="text"
+                                    className="textInp"
+                                    value={item.text}
+                                    onMouseLeave={handleOut}
+                                    onChange={(event) => handleTextChange(columnId, index, event)}
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <p className="card-text" onClick={editTextButton}>{item.text}</p>
+                                )}
+                              </div>
+                              <div className="card-footer">
+                                <CIcon icon={cilTrash} onClick={() => removeItem(columnId, index)} />
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
                     </div>
                   </div>
-                ) : ""
-              ))}
-              
-            </div>
+                )}
+              </Droppable>
+            ))}
           </div>
-          <div className="main-col" id="in-progress">
-            <div className="main-header">
-              <p className="main-header-title">In Progress</p>
-            </div>
-            <div className="main-body">
-            </div>
-          </div>
-          <div className="main-col" id="completed">
-            <div className="main-header">
-              <p className="main-header-title">Completed</p>
-            </div>
-            <div className="main-body">
-
-            </div>
-          </div>
-        </div>
+        </DragDropContext>
       </body>
     </>
   );
