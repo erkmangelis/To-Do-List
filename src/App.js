@@ -30,6 +30,7 @@ function App() {
       }]
   };
 
+  const [itemId, setItemId] = useState(0);
   const [columns, setColumns] = useState(initialData);
   const [hoverItem, setHoverItem] = useState(null);
   const [editTitle, setEditTitle] = useState(false);
@@ -73,13 +74,15 @@ function App() {
 
   const addItem = (column) => {
     if (columns["next-up"].length < 3) {
-
       const newItem = {
-        id: `${column}-${columns[column].length + 1}`,
+        id: `${column}-${itemId}`,
         title: "New To-Do",
         text: "Fill here with your task",
         droppableId: column
       };
+      
+      setItemId(itemId+1);
+
       setColumns({ ...columns, [column]: [...columns[column], newItem] });
     } else {
       alert("'Next Up' listesi doluyken yeni item ekleyemezsin.");
@@ -103,16 +106,18 @@ function App() {
       setColumns({ ...columns, [source.droppableId]: newColumn });
     } else {
       // Moving to a different column
-      const newSourceColumn = [...sourceColumn];
-      newSourceColumn.splice(source.index, 1);
-      const newDestinationColumn = [...destinationColumn];
-      newDestinationColumn.splice(destination.index, 0, { ...draggedItem, droppableId: destination.droppableId });
-
-      setColumns({
-        ...columns,
-        [source.droppableId]: newSourceColumn,
-        [destination.droppableId]: newDestinationColumn
-      });
+      if (columns[destination.droppableId].length < 3) {
+        const newSourceColumn = [...sourceColumn];
+        newSourceColumn.splice(source.index, 1);
+        const newDestinationColumn = [...destinationColumn];
+        newDestinationColumn.splice(destination.index, 0, { ...draggedItem, droppableId: destination.droppableId });  
+      
+        setColumns({
+          ...columns,
+          [source.droppableId]: newSourceColumn,
+          [destination.droppableId]: newDestinationColumn
+        });
+      }
     }
   };
 
