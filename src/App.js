@@ -117,6 +117,8 @@ function App() {
           [source.droppableId]: newSourceColumn,
           [destination.droppableId]: newDestinationColumn
         });
+      } else {
+        alert("Taşımaya çalıştığınız alan dolu.");
       }
     }
   };
