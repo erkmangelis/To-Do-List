@@ -5,5 +5,6 @@ React ile yaptığım To-Do List projesi.
 - Var olan görevi silme.
 - Görevleri sürükle-bırak ile sırasını değiştirebilme.
 - Görevleri sürükle-bırak ile bulunduğu kategoriyi değiştirme.
+- Dolu olan alana eklemeye yapmaya çalışınca uyarı verme.
 
-![image](https://github.com/user-attachments/assets/7593b176-41e0-4d56-ba5f-63dbbf98d20c)
+![ToDo-List-Gif](https://github.com/user-attachments/assets/3fd69735-464f-46fb-b494-a70ac8a0a396)
