@@ -1,0 +1,154 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  display: flex;
+  height: 16vh;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.8);
+  background-color: rgb(174,198,207);
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 3.5rem;
+}
+
+body {
+  height: 84vh;
+  width: 100%;
+  background-color: rgb(174,198,207);
+}
+
+.main {
+  display: flex;
+  width: 100%;
+  height: 98%;
+}
+
+.main-col {
+  margin: 0 10px 0 10px;
+  height: 100%;
+  width: 33%;
+  border-radius: 9px;
+}
+
+.main-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+  height: calc(20% - 1rem);;
+  width: calc(100% - 2rem);
+  border-bottom: solid rgba(0, 0, 0, 0.2) 1px;
+}
+
+.main-header-title {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 2rem;
+  font-weight: 900;
+  padding: 10px 40px 10px 40px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 9px;
+}
+
+.main-body {
+  height: calc(80% - 2rem);
+  width: calc(100% - 2rem);
+  margin: 1rem;
+}
+
+.card {
+  background-color: rgba(0, 0, 0, 0.2);;
+  width: 100%;
+  min-height: 80px;
+  border-radius: 14px;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 10px 2px 10px;
+  padding: 2px 10px 2px 10px;
+  font-size: 18px;
+  font-weight: 700;
+  min-height: 20px;
+}
+
+.card-body {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 2px 10px 2px 10px;
+  padding: 2px 10px 2px 10px;
+  min-height: 70px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 2px 10px 2px 10px;
+  padding: 2px 10px 2px 10px;
+  min-height: 20px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+
+#next-up {
+  background-color: rgb(255,105,97);
+}
+
+#in-progress {
+  background-color: rgb(253,253,150);
+}
+
+#completed {
+  background-color: rgb(119,221,119);
+}
+
+textarea:focus {
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(255, 255, 255, 0.85);
+  border: none;
+  min-width: 100%;
+  height: 60px;
+  font-size: 15px;
+}
+
+.titleInp {
+  font-size: 18px;
+  font-weight: 600;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(255, 255, 255, 0.85);
+  border: none;
+  width: 100%;
+  height: fit-content;
+}
+
+.card-text {
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.add-button {
+  position: fixed;
+  top: 1.5rem;
+  left: 1%;
+  width: 4rem;
+  height: 4rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 9px;
+}
